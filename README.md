@@ -13,7 +13,8 @@
 ### 1. Клонування репозиторію
 Завантажте проєкт з GitHub та перейдіть у його кореневу директорію:
 ```bash
-git clone https://github.com/ADernRa/Scooter-API-FastAPI-SQLalchemy-
+git clone https://github.com/ADernRa/Scooter-API-FastAPI-SQLalchemy-.git
+cd Scooter-API-FastAPI-SQLalchemy-
 ```
 
 ### 2. Налаштування віртуального оточення
