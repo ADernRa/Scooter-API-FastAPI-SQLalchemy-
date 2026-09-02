@@ -1,5 +1,13 @@
-.env
-src/**/__pycache__/
-.venv/
+
 venv/
-*.db
+.venv/
+env/
+
+.env
+
+__pycache__/
+*.pyc
+.pytest_cache/
+
+.vscode/
+.idea/

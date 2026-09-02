@@ -1,10 +1,7 @@
-from fastapi import APIRouter, Depends
 from src.dependencies import verify_admin
-from fastapi import FastAPI, Depends, HTTPException, status, APIRouter
+from fastapi import  Depends, HTTPException, status, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, func
-from sqlalchemy.orm import selectinload
-from typing import List
 
 from src.database import get_db
 from src.models import Station, Scooter

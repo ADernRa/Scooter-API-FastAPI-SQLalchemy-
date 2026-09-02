@@ -5,6 +5,6 @@ async def verify_admin(admin_token: str = Header(...)):
     if admin_token != settings.ADMIN_TOKEN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access denied. You are not an administrator.."
+            detail="Access denied. You are not an administrator"
         )
     return True

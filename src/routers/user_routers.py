@@ -55,6 +55,7 @@ async def rent_scooter(station_id: int, scooter_id: int, db: AsyncSession = Depe
 # Припинити аренду самокату
 @router.patch("/{station_id}/scooters/{scooter_id}/return", response_model=ScooterResponse)
 async def return_scooter(station_id: int, scooter_id: int, return_data: ScooterReturn, db: AsyncSession = Depends(get_db)):
+
     query = select(Scooter).where(Scooter.id == scooter_id, Scooter.station_id == station_id) 
     result = await db.execute(query)
     scooter = result.scalar_one_or_none()
@@ -66,8 +67,11 @@ async def return_scooter(station_id: int, scooter_id: int, return_data: ScooterR
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Scooter is already at a station and is not rented")
 
     scooter.is_available = True
-    scooter.battery_level = return_data.battery_level
     scooter.location = return_data.location
+    
+    if return_data.battery_level is not None:
+        scooter.battery_level = return_data.battery_level
+
     await db.commit()
     await db.refresh(scooter)
     return scooter
