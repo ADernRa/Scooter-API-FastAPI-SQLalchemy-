@@ -1,5 +1,6 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, String, Boolean, Float, Integer
+
 from typing import List
 
 class Base(DeclarativeBase):
@@ -13,7 +14,7 @@ class Station(Base):
     address: Mapped[str] = mapped_column(String(200), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    scooters: Mapped[List["Scooter"]] = relationship("Scooter", back_populates="station")
+    scooters: Mapped[List["Scooter"]] = relationship("Scooter", back_populates="station", lazy="selectin")
 
 class Scooter(Base):
     __tablename__ = "scooters"

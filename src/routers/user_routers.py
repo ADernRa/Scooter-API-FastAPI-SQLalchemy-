@@ -68,7 +68,7 @@ async def return_scooter(station_id: int, scooter_id: int, return_data: ScooterR
 
     scooter.is_available = True
     scooter.location = return_data.location
-    
+
     if return_data.battery_level is not None:
         scooter.battery_level = return_data.battery_level
 
