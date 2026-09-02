@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     PROJECT_NAME: str = "SCOOTER API"
     DEBUG: bool = False
-    ADMIN_TOKEN: str = "super-secret-admin-token-123" 
+    ADMIN_TOKEN: str
 
     model_config = SettingsConfigDict(
         env_file=".env",
