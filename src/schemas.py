@@ -5,7 +5,7 @@ class ScooterBase(BaseModel):
     model: str = Field(..., max_length=100)
     battery_level: float = Field(..., ge=0, le=100)
     is_available: bool = True
-    location: Optional[str] = Field(..., max_length=200)
+    location: str = Field(..., max_length=200)
 
 class ScooterCreate(ScooterBase):
     pass
