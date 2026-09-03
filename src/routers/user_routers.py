@@ -6,9 +6,12 @@ from typing import List
 
 from src.database import get_db
 from src.models import Station, Scooter
-from src.schemas import (
-    StationCreate, StationResponse, StationUpdate,
-    ScooterCreate, ScooterResponse, ScooterReturn
+
+from src.schemas.ScooterSchemas import (
+    ScooterCreate, ScooterResponse, ScooterUpdate, ScooterReturn
+)
+from src.schemas.SationSchemas import (
+    StationCreate, StationResponse, StationUpdate
 )
 
 router = APIRouter(

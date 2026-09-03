@@ -5,9 +5,11 @@ from sqlalchemy import select, delete, func
 
 from src.database import get_db
 from src.models import Station, Scooter
-from src.schemas import (
-    StationCreate, StationResponse, StationUpdate,
+from src.schemas.ScooterSchemas import (
     ScooterCreate, ScooterResponse, ScooterUpdate
+)
+from src.schemas.SationSchemas import (
+    StationCreate, StationResponse, StationUpdate
 )
 
 admin_router = APIRouter(
