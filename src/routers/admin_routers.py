@@ -105,7 +105,7 @@ async def update_station(
         setattr(station, key, value)
 
     await db.commit()
-    await db.refresh(station,  фыв=["scooters"])
+    await db.refresh(station,  attribute_names=["scooters"])
     return station
 
 # Оновлення інформації про самокат
