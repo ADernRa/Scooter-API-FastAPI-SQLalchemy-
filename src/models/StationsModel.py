@@ -12,4 +12,5 @@ class Station(Base):
     address: Mapped[str] = mapped_column(String(200), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
+    staff: Mapped[List["Staff"]] = relationship("Staff", back_populates="station", lazy="selectin")
     scooters: Mapped[List["Scooter"]] = relationship("Scooter", back_populates="station", lazy="selectin")
