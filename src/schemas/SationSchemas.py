@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 
 from src.schemas.ScooterSchemas import ScooterResponse
+from src.schemas.SatffSchemas import StaffResponse
 
 class StationBase(BaseModel):
     name: str = Field(..., max_length=100)
@@ -20,5 +21,7 @@ class StationResponse(StationBase):
     id: int
 
     scooters: List[ScooterResponse] = []
+    staff: List[StaffResponse] = []
+
 
     model_config = ConfigDict(from_attributes=True)
