@@ -31,3 +31,10 @@ async def create_staff(station_id: int, staff: StaffCreate, db: AsyncSession = D
     await db.commit()
     await db.refresh(new_staff)
     return new_staff
+
+@admin_router.get("station/{station_id}/staff", response_model=List[StaffResponse], status_code=status.HTTP_201_CREATED)
+async def get_staff(station_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(Staff).where(Staff.station_id == station_id)
+    result = await db.execute(query)
+    staff = result.scalars().all()
+    return staff
