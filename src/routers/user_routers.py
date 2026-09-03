@@ -19,15 +19,6 @@ router = APIRouter(
     tags=["users"]
     )
 
-# Список станцій
-@router.get("", response_model=List[StationResponse])
-async def get_stations(db: AsyncSession = Depends(get_db)):
-    query = select(Station).options(selectinload(Station.scooters))
-    result = await db.execute(query)
-    stations = result.scalars().all()
-    print(stations)
-    return stations
-
 # Отримати інформацію про незайняті самокати
 @router.get("/{station_id}/scooters/available", response_model=List[ScooterResponse])
 async def get_avaible_scooter(station_id: int, db: AsyncSession = Depends(get_db)):

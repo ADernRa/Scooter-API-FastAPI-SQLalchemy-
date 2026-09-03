@@ -2,6 +2,8 @@ from src.dependencies import verify_admin
 from fastapi import  Depends, HTTPException, status, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, func
+from typing import List
+from sqlalchemy.orm import selectinload
 
 from src.database import get_db
 from src.models import Station, Scooter
@@ -18,19 +20,30 @@ admin_router = APIRouter(
     dependencies=[Depends(verify_admin)]  
 )
 
+# Список станцій
+@admin_router.get("stations", response_model=List[StationResponse])
+async def get_stations(db: AsyncSession = Depends(get_db)):
+    query = select(Station).options(
+        selectinload(Station.scooters),
+        selectinload(Station.staff)
+        )
+    result = await db.execute(query)
+    stations = result.scalars().all()
+    print(stations)
+    return stations
 
 # Створити станцію
-@admin_router.post("", response_model=StationResponse, status_code=status.HTTP_201_CREATED)
+@admin_router.post("/stations", response_model=StationResponse, status_code=status.HTTP_201_CREATED)
 async def create_station(station: StationCreate, db: AsyncSession = Depends(get_db)):
     new_station = Station(**station.model_dump())
     db.add(new_station)
     await db.commit()
-    await db.refresh(new_station, attribute_names=["scooters"])
+    await db.refresh(new_station, attribute_names=["scooters", "staff"])
     print(new_station)
     return new_station
 
 # Створити самокат
-@admin_router.post("/{station_id}/scooters", response_model=ScooterResponse, status_code=status.HTTP_201_CREATED)
+@admin_router.post("/stations/{station_id}/scooters", response_model=ScooterResponse, status_code=status.HTTP_201_CREATED)
 async def create_scooter(station_id: int, scooter: ScooterCreate, db: AsyncSession = Depends(get_db)):
     query = select(Station).where(Station.id == station_id)
     result = await db.execute(query)
@@ -107,7 +120,7 @@ async def update_station(
         setattr(station, key, value)
 
     await db.commit()
-    await db.refresh(station,  attribute_names=["scooters"])
+    await db.refresh(station, attribute_names=["scooters", "staff"])
     return station
 
 # Оновлення інформації про самокат
