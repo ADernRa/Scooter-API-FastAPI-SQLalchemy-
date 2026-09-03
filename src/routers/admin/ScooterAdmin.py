@@ -29,7 +29,6 @@ async def create_scooter(station_id: int, scooter: ScooterCreate, db: AsyncSessi
     db.add(new_scooter)
     await db.commit()
     await db.refresh(new_scooter)
-    print(new_scooter)
     return new_scooter
 
 

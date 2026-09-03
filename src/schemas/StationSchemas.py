@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 
 from src.schemas.ScooterSchemas import ScooterResponse
-from src.schemas.SatffSchemas import StaffResponse
+from src.schemas.StaffSchemas import StaffResponse
 
 class StationBase(BaseModel):
     name: str = Field(..., max_length=100)

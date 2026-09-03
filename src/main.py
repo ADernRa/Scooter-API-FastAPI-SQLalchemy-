@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.routers.admin import ScooterAdmin, StationAdmin
+from src.routers.admin import ScooterAdmin, StationAdmin, StaffAdmin
 from src.routers.user import ScooterUser
 from fastapi.middleware.cors import CORSMiddleware
 from src.config import settings
@@ -37,6 +37,7 @@ app.add_middleware(
 
 app.include_router(StationAdmin.admin_router)
 app.include_router(ScooterAdmin.admin_router)
+app.include_router(StaffAdmin.admin_router)
 app.include_router(ScooterUser.router)
 
 @app.get("/", tags=["Health Check"])

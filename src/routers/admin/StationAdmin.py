@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 from src.database import get_db
 from src.models import Station, Scooter
 
-from src.schemas.SationSchemas import (
+from src.schemas.StationSchemas import (
     StationCreate, StationResponse, StationUpdate
 )
 
@@ -27,7 +27,6 @@ async def get_stations(db: AsyncSession = Depends(get_db)):
         )
     result = await db.execute(query)
     stations = result.scalars().all()
-    print(stations)
     return stations
 
 # Створити станцію
