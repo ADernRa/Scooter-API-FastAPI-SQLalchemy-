@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict 
 from typing import List
+from src.schemas.RideSchemas import RideResponde
 
 class ScooterBase(BaseModel):
     model: str = Field(..., max_length=100)
@@ -25,5 +26,7 @@ class ScooterReturn(BaseModel):
 class ScooterResponse(ScooterBase):
     station_id: int
     id: int
+
+    rides: List[RideResponde] = []
 
     model_config = ConfigDict(from_attributes=True)

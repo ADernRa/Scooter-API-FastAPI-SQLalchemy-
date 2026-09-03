@@ -15,3 +15,4 @@ class Scooter(Base):
     station_id: Mapped[int] = mapped_column(ForeignKey("stations.id"), nullable=False)
 
     station: Mapped["Station"] = relationship("Station", back_populates="scooters")
+    rides: Mapped[List["Ride"]] = relationship("Ride", back_populates="scooter", lazy="selectin")

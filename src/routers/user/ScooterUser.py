@@ -2,9 +2,12 @@ from fastapi import Depends, HTTPException, status, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import List
+from datetime import datetime, timezone
+from sqlalchemy.orm import selectinload
 
 from src.database import get_db
-from src.models import Scooter
+from src.models import Scooter, Station, Ride
+from src.models.Rides import StatusRide
 
 from src.schemas.ScooterSchemas import (
     ScooterResponse, ScooterReturn
@@ -28,6 +31,12 @@ async def get_avaible_scooter(station_id: int, db: AsyncSession = Depends(get_db
 # Арендувати самокат
 @router.patch("/{station_id}/scooters/{scooter_id}/rent", response_model=ScooterResponse)
 async def rent_scooter(station_id: int, scooter_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(Station).where(Station.id == station_id)
+    result = await db.execute(query)
+    station = result.scalar_one_or_none()
+    if not station:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+    
     query = select(Scooter).where(Scooter.id == scooter_id, Scooter.station_id == station_id) 
     result = await db.execute(query)
     scooter = result.scalar_one_or_none()
@@ -38,9 +47,19 @@ async def rent_scooter(station_id: int, scooter_id: int, db: AsyncSession = Depe
     if not scooter.is_available:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Scooter is not available")
 
+    new_ride = Ride(
+        scooter_id = scooter_id,
+        start_ride = datetime.now(timezone.utc).date(), # Змінити на формат Дата.час
+        status = StatusRide.ACTIVE,
+        cost = 0.0
+    )
+
     scooter.is_available = False
+
+    db.add(new_ride)
     await db.commit()
     await db.refresh(scooter)
+    await db.refresh(new_ride)
     return scooter
 
 # Припинити аренду самокату
@@ -57,12 +76,22 @@ async def return_scooter(station_id: int, scooter_id: int, return_data: ScooterR
     if scooter.is_available:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Scooter is already at a station and is not rented")
 
+    query = select(Ride).where(Ride.scooter_id == scooter_id, Ride.status == StatusRide.ACTIVE)
+    result = await db.execute(query)
+    ride = result.scalar_one_or_none()
+    if not ride:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ride not found")
+
+    ride.status = StatusRide.COMPLETED
+    ride.end_ride = datetime.now(timezone.utc).date() # Змінити на формат Дата.час
+    ride.cost = 1.0 # Створити функцію для підрахунку вартості
+
     scooter.is_available = True
     scooter.location = return_data.location
 
     if return_data.battery_level is not None:
         scooter.battery_level = return_data.battery_level
-
+    
     await db.commit()
     await db.refresh(scooter)
     return scooter
