@@ -1,23 +1,20 @@
-from fastapi import FastAPI, Depends, HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, status, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from typing import List
 
 from src.database import get_db
-from src.models import Station, Scooter
+from src.models import Scooter
 
 from src.schemas.ScooterSchemas import (
-    ScooterCreate, ScooterResponse, ScooterUpdate, ScooterReturn
-)
-from src.schemas.SationSchemas import (
-    StationCreate, StationResponse, StationUpdate
+    ScooterResponse, ScooterReturn
 )
 
 router = APIRouter(
     prefix="/api/v1/user", 
     tags=["users"]
     )
+
 
 # Отримати інформацію про незайняті самокати
 @router.get("/{station_id}/scooters/available", response_model=List[ScooterResponse])
