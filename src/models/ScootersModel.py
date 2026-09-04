@@ -12,6 +12,7 @@ class Scooter(Base):
     battery_level: Mapped[float] = mapped_column(Float, nullable=False)
     is_available: Mapped[bool] = mapped_column(Boolean, default=True)
     location: Mapped[str] = mapped_column(String(200), nullable=False)
+    price: Mapped[float] = mapped_column(Float, nullable=False)
     station_id: Mapped[int] = mapped_column(ForeignKey("stations.id"), nullable=False)
 
     station: Mapped["Station"] = relationship("Station", back_populates="scooters")
