@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "SCOOTER API"
     DEBUG: bool = False
     ADMIN_TOKEN: str
-
+    
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

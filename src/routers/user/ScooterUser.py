@@ -5,6 +5,7 @@ from typing import List
 from datetime import datetime, timezone
 from sqlalchemy.orm import selectinload
 
+from src.services.ride_service import calculate_cost
 from src.database import get_db
 from src.models import Scooter, Station, Ride
 from src.models.Rides import StatusRide
@@ -84,7 +85,7 @@ async def return_scooter(station_id: int, scooter_id: int, return_data: ScooterR
 
     ride.status = StatusRide.COMPLETED
     ride.end_ride = datetime.now()
-    ride.cost = 1.0 # Створити функцію для підрахунку вартості
+    ride.cost = calculate_cost(ride.start_ride, ride.end_ride, scooter.price)
 
     scooter.is_available = True
     scooter.location = return_data.location
@@ -94,4 +95,5 @@ async def return_scooter(station_id: int, scooter_id: int, return_data: ScooterR
     
     await db.commit()
     await db.refresh(scooter)
+    await db.refresh(ride)
     return scooter
