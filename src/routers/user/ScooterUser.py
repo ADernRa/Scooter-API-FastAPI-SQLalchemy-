@@ -49,7 +49,7 @@ async def rent_scooter(station_id: int, scooter_id: int, db: AsyncSession = Depe
 
     new_ride = Ride(
         scooter_id = scooter_id,
-        start_ride = datetime.now(timezone.utc).date(), # Змінити на формат Дата.час
+        start_ride = datetime.now(),
         status = StatusRide.ACTIVE,
         cost = 0.0
     )
@@ -83,7 +83,7 @@ async def return_scooter(station_id: int, scooter_id: int, return_data: ScooterR
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ride not found")
 
     ride.status = StatusRide.COMPLETED
-    ride.end_ride = datetime.now(timezone.utc).date() # Змінити на формат Дата.час
+    ride.end_ride = datetime.now()
     ride.cost = 1.0 # Створити функцію для підрахунку вартості
 
     scooter.is_available = True

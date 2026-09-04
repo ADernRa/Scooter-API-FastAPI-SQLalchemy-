@@ -6,7 +6,7 @@ from typing import Optional
 
 
 class RideBase(BaseModel):
-    start_ride: date = Field(...)
+    start_ride: datetime = Field(...)
     end_ride: Optional[datetime] = None
     status: StatusRide = Field(...)
     cost: float = Field(...)
