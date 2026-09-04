@@ -13,10 +13,11 @@ class StaffCreate(StaffBase):
     pass
 
 class StaffUpdate(BaseModel):
-    name: str | None= Field(..., max_length=30)
-    surname: str | None= Field(..., max_length=30)
-    start_work: date | None= Field(...)
-    job_title: str | None= Field(..., max_length=40)
+    name: str | None= Field(None, max_length=30)
+    surname: str | None= Field(None, max_length=30)
+    start_work: date | None= None
+    job_title: str | None= Field(None, max_length=40)
+    station_id: int | None = None
 
 class StaffResponse(StaffBase):
     id: int

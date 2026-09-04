@@ -17,7 +17,7 @@ admin_router = APIRouter(
     tags=["admins"],
     dependencies=[Depends(verify_admin)]  
 )
-
+# Створити нового співробітника
 @admin_router.post("station/{station_id}/staff", response_model=StaffResponse, status_code=status.HTTP_201_CREATED)
 async def create_staff(station_id: int, staff: StaffCreate, db: AsyncSession = Depends(get_db)):
     query = select(Station).where(Station.id == station_id)
@@ -32,9 +32,36 @@ async def create_staff(station_id: int, staff: StaffCreate, db: AsyncSession = D
     await db.refresh(new_staff)
     return new_staff
 
+# Отримати список всіх співробітників на станції
 @admin_router.get("station/{station_id}/staff", response_model=List[StaffResponse], status_code=status.HTTP_201_CREATED)
 async def get_staff(station_id: int, db: AsyncSession = Depends(get_db)):
     query = select(Staff).where(Staff.station_id == station_id)
     result = await db.execute(query)
     staff = result.scalars().all()
+    return staff
+
+# Оновити інформацію про співробітника
+@admin_router.patch("station/{station_id}/staff/{staff_id}", response_model=StaffResponse)
+async def update_staff(station_id: int, staff_id: int, staff_data: StaffUpdate, db: AsyncSession = Depends(get_db)):
+    query = select(Staff).where(Staff.id == staff_id)
+    result = await db.execute(query)
+    staff = result.scalar_one_or_none()
+    if not staff:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Staff not found")
+
+    if staff_data.station_id is not None:
+        station = await db.execute(select(Station).where(Station.id == staff_data.station_id))
+        if not station.scalar_one_or_none():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"It is not possible to lock the scooter. Stations with ID {staff_data.station_id} does not exist"
+            )
+
+    update_dict = staff_data.model_dump(exclude_unset=True)
+
+    for key, value in update_dict.items():
+            setattr(staff, key, value)
+    
+    await db.commit()
+    await db.refresh(staff)
     return staff
