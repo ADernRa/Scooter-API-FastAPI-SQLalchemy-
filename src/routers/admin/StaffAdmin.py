@@ -65,3 +65,21 @@ async def update_staff(station_id: int, staff_id: int, staff_data: StaffUpdate, 
     await db.commit()
     await db.refresh(staff)
     return staff
+
+# Видалити запис про співробітника
+@admin_router.delete("/staff/{staff_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_staff(
+    staff_id: int, 
+    db: AsyncSession = Depends(get_db)
+    ):
+    query = select(Staff).where(Staff.id == staff_id)
+    result = await db.execute(query)
+    staff = result.scalar_one_or_none()
+
+    if not staff:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Scooter not found")
+
+    delete_query = delete(Staff).where(Staff.id == staff_id)
+    await db.execute(delete_query)
+    await db.commit()
+    return None
